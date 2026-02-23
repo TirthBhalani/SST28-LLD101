@@ -1,0 +1,28 @@
+public class Money 
+{
+    public static final Money ZERO = new Money(0.0);
+    
+    public final double amount;
+    
+    public Money(double amount) 
+    { 
+        this.amount = round2(amount); 
+    }
+
+    public Money plus(Money other) 
+    { 
+        return new Money(this.amount + other.amount); 
+    }
+
+    private static double round2(double x) 
+    { 
+        return Math.round(x * 100.0) / 100.0; 
+    }
+
+    @Override 
+    public String toString() 
+    { 
+        return String.format("%.2f", amount); 
+    }
+}
+// Ye Money value object arithmetic aur rounding ko centralize karta hai, so scattered double calculations avoid hote hai aur formatting consistent rehta hai
