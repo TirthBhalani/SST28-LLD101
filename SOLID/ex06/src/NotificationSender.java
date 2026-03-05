@@ -1,30 +1,23 @@
-public abstract class NotificationSender 
-{
+public abstract class NotificationSender {
     protected final AuditLog audit;
 
-    protected NotificationSender(AuditLog audit) 
-    {
-        this.audit = audit;
+    protected NotificationSender(AuditLog audit) { 
+        this.audit = audit; 
     }
 
-    public final void send(Notification n) 
-    {
-        if (n == null) 
-        {
-            throw new NullPointerException("Notification cannot be null");
-        }
-        if (n.body == null) 
-        {
-            throw new NullPointerException("Notification.body cannot be null");
+    public final void send(Notification n) {
+        if (n == null) throw new IllegalArgumentException("Notification cannot be null");
+
+        ValidationResult result = validate(n);
+        if (!result.isValid()) {
+            // If it fails, we throw the error. 
+            // The Main class will catch this and log the 3rd entry.
+            throw new IllegalArgumentException(result.getErrorMessage());
         }
 
-        validate(n);
-
-        doSend(n);
+        performSend(n);
     }
 
-    protected void validate(Notification n) {}
-    
-    protected abstract void doSend(Notification n);
+    protected abstract ValidationResult validate(Notification n);
+    protected abstract void performSend(Notification n);
 }
-// Ye base class common preconditions enforce karta hai aur template method pattern use karta hai, taaki sab subclasses same contract follow kare aur LSP maintain ho

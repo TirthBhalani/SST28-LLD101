@@ -1,24 +1,19 @@
-public class EmailSender extends NotificationSender 
-{
-    public EmailSender(AuditLog audit) 
-    {
-        super(audit);
+public class EmailSender extends NotificationSender {
+    public EmailSender(AuditLog audit) { super(audit); }
+
+    @Override
+    protected ValidationResult validate(Notification n) {
+        return ValidationResult.ok(); // Email is unrestricted
     }
 
     @Override
-    protected void validate(Notification n) 
-    {
-        if (n.email == null || n.email.isBlank()) 
-        {
-            throw new IllegalArgumentException("Email address is required");
-        }
-    }
-
-    @Override
-    protected void doSend(Notification n) 
-    {
-        System.out.println("EMAIL -> to=" + n.email + " subject=" + n.subject + " body=" + n.body);
+    protected void performSend(Notification n) {
+        // We still respect the "legacy" truncation for the demo,(bcz we want to preserve output)
+        // but it's now within the send step.
+        String body = n.body;
+        if (body != null && body.length() > 40) body = body.substring(0, 40);
+        
+        System.out.println("EMAIL -> to=" + n.email + " subject=" + n.subject + " body=" + body);
         audit.add("email sent");
     }
 }
-// Ye EmailSender base contract ko follow karta hai aur apni specific validation + sending logic handle karta hai, so subtype properly substitute ho sakta hai

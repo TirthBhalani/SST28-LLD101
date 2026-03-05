@@ -1,23 +1,23 @@
-public abstract class Exporter 
-{
-    public final ExportResult export(ExportRequest req) 
-    {
-        if (req == null) {
-            throw new NullPointerException("ExportRequest cannot be null");
-        }
-        if (req.title == null) {
-            throw new NullPointerException("ExportRequest.title cannot be null");
-        }
-        if (req.body == null) {
-            throw new NullPointerException("ExportRequest.body cannot be null");
+public abstract class Exporter {
+   
+    public final ExportResult export(ExportRequest req) {
+        //we handle null checks in the exporter only.
+        if (req == null) throw new IllegalArgumentException("Request cannot be null");
+
+        //  Subclass-specific validation (Preconditions)
+        ValidationResult vr = validate(req);
+        if (!vr.isValid()) {
+            throw new IllegalArgumentException(vr.getErrorMessage());
         }
 
+        // Conversion (Implementation)
         return doExport(req);
     }
 
+    protected abstract ValidationResult validate(ExportRequest req);
     protected abstract ExportResult doExport(ExportRequest req);
 
-    // why this keywrd ? 
-        //taki only subclasses can see this method. external users isko call nahi kar sakte.
+    protected String ensureNotNull(String s) {
+        return s == null ? "" : s;
+    }
 }
-// Ye base class clear preconditions enforce karta hai aur common contract define karta hai, taaki sab subclasses same rules follow kare aur true substitutability maintain ho (core LSP)
