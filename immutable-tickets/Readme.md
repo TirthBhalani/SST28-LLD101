@@ -1,4 +1,10 @@
-we made the constructor private of incident ticket. we introducted a new inner class called builder which has public setters. we removed setter of incident ticket. this inner class had a build method which first validates all fields and then makes a new object of ticket.
+first make the fields private and final and remove all the setters.
+wherever we return or set the field, we will create deep copies or return unmodifiable lists which are view only.
+
+we made the constructor private of incident ticket. and introduced a static builder class
+the constructor of incident ticket will take a single object of the builder class
+
+we introducted a new inner class called builder which has public setters.  this inner class had a build method which first validates all fields and then makes a new object of ticket.
 
 we will use this builder class to make new ticket and then tobuilder method to change the values which still keeps the ticket unchanged
 
@@ -14,7 +20,7 @@ No Setters: All setX() methods were deleted.
 Defensive Copying: The tags list is now wrapped in Collections.unmodifiableList(new ArrayList<>(...)). This prevents anyone from adding/removing tags even if they have a reference to the list.
 
 2. The Builder (The Creator)
-Fluent API: Added a static inner Builder class with methods that return this, allowing for method chaining (.id().title().build()).
+Added a static inner Builder class with methods that return this, allowing for method chaining (.id().title().build()).
 
 Validation: Moved all business logic (email checks, ID patterns, length limits) into the build() method.
 
